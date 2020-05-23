@@ -8,6 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.hellojsp.model.CalculatorStrategy;
+import com.example.hellojsp.model.Adder;
+import com.example.hellojsp.model.Multiplier;
+import com.example.hellojsp.model.Subtractor;
+
 public class MyCalculatorServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
@@ -20,9 +25,18 @@ public class MyCalculatorServlet extends HttpServlet {
 
     PrintWriter out = resp.getWriter();
     out.println("The servlet's got your parameters: <" + operation + ", " + numberOne + ", " + numberTwo + ">.");
+    out.println("<br>The result is <b>" + getCalculator(operation).calculate(numberOne, numberTwo) + "</b>.");
 
-    // TODO: Implement calculator logic and return the result in the response.
     // TODO: Implement division and handle the case for number_two == 0.
+  }
+
+  private CalculatorStrategy getCalculator(String op) {
+    switch(op) {
+      case "add": return new Adder();
+      case "sub": return new Subtractor();
+      case "mul": return new Multiplier();
+    }
+    throw new IllegalArgumentException("unknown operator");
   }
 
 }
