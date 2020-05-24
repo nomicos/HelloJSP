@@ -1,8 +1,8 @@
 package com.example.hellojsp.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +23,11 @@ public class MyCalculatorServlet extends HttpServlet {
     final int numberOne = Integer.parseInt(req.getParameter("number_one"));
     final int numberTwo = Integer.parseInt(req.getParameter("number_two"));
 
-    resp.setContentType("text/html");
+    final int result = getCalculator(operation).calculate(numberOne, numberTwo);
+    req.setAttribute("result", result);
 
-    PrintWriter out = resp.getWriter();
-    out.println("The servlet's got your parameters: &lt;" + operation + ", " + numberOne + ", " + numberTwo + "&gt;.");
-    out.println("<br>The result is <b>" + getCalculator(operation).calculate(numberOne, numberTwo) + "</b>.");
+    final RequestDispatcher rd = req.getRequestDispatcher("result.jsp");
+    rd.forward(req, resp);
 
     // TODO: Implement division and handle the case for number_two == 0.
   }
