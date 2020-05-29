@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.hellojsp.model.CalculatorStrategy;
+import com.example.hellojsp.model.Divider;
 import com.example.hellojsp.model.Adder;
 import com.example.hellojsp.model.Multiplier;
 import com.example.hellojsp.model.Subtractor;
@@ -23,13 +24,19 @@ public class MyCalculatorServlet extends HttpServlet {
     final int numberOne = Integer.parseInt(req.getParameter("number_one"));
     final int numberTwo = Integer.parseInt(req.getParameter("number_two"));
 
-    final int result = getCalculator(operation).calculate(numberOne, numberTwo);
+    Integer result = null;
+    try {
+      result = getCalculator(operation).calculate(numberOne, numberTwo);
+    } catch(ArithmeticException e) {
+      // TODO: Create a nice little error page for this case.
+      resp.sendError(400, "An arithmetic error has occurred!");
+      return;
+    }
+
     req.setAttribute("result", result);
 
     final RequestDispatcher rd = req.getRequestDispatcher("result.jsp");
     rd.forward(req, resp);
-
-    // TODO: Implement division and handle the case for number_two == 0.
   }
 
   private CalculatorStrategy getCalculator(String op) {
@@ -37,6 +44,7 @@ public class MyCalculatorServlet extends HttpServlet {
       case "add": return new Adder();
       case "sub": return new Subtractor();
       case "mul": return new Multiplier();
+      case "div": return new Divider();
     }
     throw new IllegalArgumentException("unknown operator");
   }
